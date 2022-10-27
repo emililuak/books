@@ -16,7 +16,7 @@
                 <div class="card-content">
                     <span class="card-title">Add Task</span>
                     <div class="class row">
-                        <form class="col s12">
+                        <form class="col s12" id="add-task">
                             <div class="row">
                                 <div class="input field col s12">
                                     <input type="text" id="task">
@@ -33,16 +33,17 @@
                 </div>
                 <div class="card-action">
                     <p class="card-title" id="task-title">Tasks</p>
-                    <ul class="collection">
-                        <li class="collection-item">study html
+                    <ul class="collection" id="task-list">
+                        <li class="collection-item">Study HTML
                             <a href="#" class="secondary-content">X</a>
                         </li>
-                        <li class="collection-item">study js
+                        <li class="collection-item">Study JS
                             <a href="#" class="secondary-content">X</a>
-                        <li class="collection-item">study css
+                        <li class="collection-item">Study CSS
                             <a href="#" class="secondary-content">X</a>
                         </li>
                     </ul>
+                    <a href="#" id="delete-tasks" class="button">Delete All</a>
                 </div>
             </div>
         </div>
