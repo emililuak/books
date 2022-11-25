@@ -1,153 +1,105 @@
-/*const taskTitle = document.getElementById(task-title)
 
-//style
-taskTitle.style.background = "#333"
-taskTitle.style.color = "#fff"
-taskTitle.style.padding = "15px"
-//taskTitle.style.display = "none"
+const form = document.querySelector('#book-form');
+const booksList = document.querySelector('#book-list');
+const deleteBooks = document.querySelector('#delete-books')
 
-//content
-taskTitle.textContent = "My Tasks"
-taskTitle.innerText = "My favourite Tasks"
-taskTitle.innerHTML = '<span style="color: red">My Tasks</span>'
+// events
+form.addEventListener('submit', addBook);
+booksList.addEventListener('click', deleteBook);
+deleteBooks.addEventListener('click', deleteAllBooks);
 
-// selectorid on tag class id
 
-// single element
-const li = document.querySelector('li')
-li = document.querySelector('li:last-child')
-li = document.querySelector("li:nth-child(even)")
-li = document.querySelector('li:nth-child(odd)')
-li = document.querySelectorAll('li')
+function addBook(e) {
+    //get form input data
+    const titleInput = document.querySelector('#title');
+    const authorInput = document.querySelector('#author');
+    const isbnInput = document.querySelector('#isbn');
+    // input value
+    const title = titleInput.value;
+    const author = authorInput.value;
+    const isbn = isbnInput.value;
+    // create <tr> element
+    const row = document.createElement('tr');
+    // create book
+    const book = [title, author, isbn];
 
-//multible elements
-const oddLi = document.querySelectorAll('li:nth-child(odd)')
+    book.forEach((dataItem) => {
+        const td = document.createElement('td');
+        td.appendChild(document.createTextNode(dataItem));
+        row.appendChild(td);
+    })
 
-for (let = i = 0; i<2; i++){
-    //document.querySelectorAll('li:nth-child(odd)')[i] .style.background ='#ddd'
-    oddLi[i].style.background = '#ddd'
+    const td = document.createElement('td');
+    const link = document.createElement('a');
+    link.setAttribute('href', '#');
+    link.appendChild(document.createTextNode('X'));
+    td.appendChild(link);
+    row.appendChild(td);
+
+    booksList.appendChild(row);
+    // clear input value
+    titleInput.value = '';
+    authorInput.value = '';
+    isbnInput.value = '';
+
+    // add book to local storage
+    addBookToLS(book);
+    // form submit event control
+    e.preventDefault();
 }
 
-oddLi.forEach((li, i) => {
-    li.style.background = "#ddd"
-})
 
-const list = document.querySelector("ul")
-
-console.log(list)
-console.log(oddLi)
-console.log(taskTitle)
- const taskInput = document.querySelector('#task')
-const form = document.querySelector('form')
-form.addEventListener("submit", addTask)
-taskInput.addEventListener('keyup', showTask)
-
-function showTask(event){
-    console.log(taskInput.value)
-
-}
-function addTask(event) {
-    console.log(taskInput.value)
-    event.preventDefault()
-}*/
-
-const form = document.querySelector('#add-task')
-form.addEventListener('submit', addTask)
-const taskList = document.querySelector('#task-list')
-taskList.addEventListener('click', deleteTask)
-const deleteTasks = document.querySelector('#delete-tasks')
-deleteTasks.addEventListener('click', deleteAllTasks)
-document.addEventListener('DOMContentLoaded', getTasksFromLS)
-function addTask(event) {
-    //get form input value
-    const taskInput = document.querySelector('#task')
-    //create li with value and X link
-    const li = document.createElement('li')
-    li.appendChild(document.createTextNode(taskInput.value))
-    li.className = 'collection-item'
-
-    const x = document.createElement('a')
-    x.appendChild(document.createTextNode('X'))
-    x.setAttribute('href', '#')
-    x.className = 'secondary-content'
-
-    li.appendChild(x)
-
-    const ul = document.querySelector('ul')
-    ul.appendChild(li)
-    // save task value to local storage
-    AddTaskToLS(taskInput.value)
-    // delete input value from input field
-    taskInput.value = ' '
-    event.preventDefault()
-}
-
-function deleteTask(event) {
-    if (event.target.textContent === 'X'){
-        if( confirm('Are you sure you want to delete this task?')){
-            event.target.parentElement.remove()
-            let task = event.target.parentElement.textContent.slice(0, length-1)
-            deleteTaskFromLS(task)
+// delete book
+function deleteBook(e) {
+    if(e.target.textContent === 'X') {
+        if(confirm('Are you sure to delete this book?')) {
+            e.target.parentElement.parentElement.remove()
+            let isbn = event.target.parentElement.previousElementSibling
+            let author = isbn.previousElementSibling
+            let title = author.previousElementSibling
+            let book = [title.textContent, author.textContent, isbn.textContent]
+            deleteBookFromLS(book);
         }
     }
 }
 
-function deleteAllTasks(event){
-    //taskList.innerHTML = '' - sobib kui väike kogus
-    while (taskList.firstChild) {
-        taskList.removeChild(taskList.firstChild)
+// delete all books
+function deleteAllBooks(e) {
+    if(confirm('Are you sure to delete all books?')) {
+        while (booksList.firstChild){
+            booksList.removeChild(booksList.firstChild)
+        }
     }
-    localStorage.removeItem('tasks')
 }
 
-function AddTaskToLS(task){
-    let tasks
-    if (localStorage.getItem('tasks') === null) {
-        tasks = []
+// add book to local storage
+function addBookToLS(book) {
+    let books
+    if(localStorage.getItem('books') === null) {
+        books = []
     } else {
-        tasks = JSON.parse(localStorage.getItem('tasks'))
+        books = JSON.parse(localStorage.getItem('books'))
     }
-    tasks.push(task)
-    localStorage.setItem('tasks', JSON.stringify(tasks))
+    books.push(book)
+    localStorage.setItem('books', JSON.stringify(books))
 }
 
-function deleteTaskFromLS(task){
-    let tasks
-    if(localStorage.getItem('tasks') === null) {
-        tasks = []
+// delete book from local storage
+function deleteBookFromLS(book1) {
+    let books
+    if(localStorage.getItem(`books`) === null) {
+        books = []
     } else {
-        tasks = JSON.parse(localStorage.getItem('tasks'))
+        books = JSON.parse(localStorage.getItem(`books`))
+        console.log(typeof books)
+
     }
-    tasks.forEach((taskFromLS, index) => {
-        if(taskFromLS === task){
-            tasks.splice(index, 1)
+    console.log(books)
+    books.forEach((bookFromLS, index) => {
+        console.log(JSON.stringify(bookFromLS) === JSON.stringify(book1))
+        if(JSON.stringify(bookFromLS) === JSON.stringify(book1)) {
+            books.splice(index, 1)
         }
     })
-    localStorage.setItem('tasks', JSON.stringify(tasks))
-}
-
-function getTasksFromLS(event){
-    let tasks
-    if(localStorage.getItem('tasks') === null){
-        tasks = []
-    } else{
-        tasks = JSON.parse(localStorage.getItem('tasks'))
-    }
-    tasks.forEach((taskFormLS) => {
-        // create li with value and X link
-        const li = document.createElement('li')
-        li.appendChild(document.createTextNode(taskFormLS))
-        li.className = 'collection-item'
-
-        const x = document.createElement('a')
-        x.appendChild(document.createTextNode('X'))
-        x.setAttribute('href', '#')
-        x.className = 'secondary-content'
-
-        li.appendChild(x)
-
-        const ul = document.querySelector('ul')
-        ul.appendChild(li)
-    })
-    localStorage.setItem('tasks', JSON.stringify(tasks))
+    localStorage.setItem('books', JSON.stringify(books))
 }
