@@ -57,8 +57,7 @@ const taskList = document.querySelector('#task-list')
 taskList.addEventListener('click', deleteTask)
 const deleteTasks = document.querySelector('#delete-tasks')
 deleteTasks.addEventListener('click', deleteAllTasks)
-document.
-
+document.addEventListener('DOMContentLoaded', getTasksFromLS)
 function addTask(event) {
     //get form input value
     const taskInput = document.querySelector('#task')
@@ -127,6 +126,28 @@ function deleteTaskFromLS(task){
     localStorage.setItem('tasks', JSON.stringify(tasks))
 }
 
-function getTasksFromLS(){
+function getTasksFromLS(event){
+    let tasks
+    if(localStorage.getItem('tasks') === null){
+        tasks = []
+    } else{
+        tasks = JSON.parse(localStorage.getItem('tasks'))
+    }
+    tasks.forEach((taskFormLS) => {
+        // create li with value and X link
+        const li = document.createElement('li')
+        li.appendChild(document.createTextNode(taskFormLS))
+        li.className = 'collection-item'
 
+        const x = document.createElement('a')
+        x.appendChild(document.createTextNode('X'))
+        x.setAttribute('href', '#')
+        x.className = 'secondary-content'
+
+        li.appendChild(x)
+
+        const ul = document.querySelector('ul')
+        ul.appendChild(li)
+    })
+    localStorage.setItem('tasks', JSON.stringify(tasks))
 }
